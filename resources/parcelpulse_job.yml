@@ -1,0 +1,47 @@
+resources:
+  jobs:
+    parcelpulse_pipeline:
+      name: ParcelPulse ${bundle.target} Pipeline
+      description: Medallion parcel analytics pipeline deployed with Databricks Declarative Automation Bundles.
+      max_concurrent_runs: 1
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
+
+      parameters:
+        - name: catalog_name
+          default: ${var.catalog_name}
+
+      tasks:
+        - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../src/notebooks/01_bronze_ingestion.py
+            source: WORKSPACE
+
+        - task_key: silver_transformation
+          depends_on:
+            - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../src/notebooks/02_silver_transformation.py
+            source: WORKSPACE
+
+        - task_key: gold_marts
+          depends_on:
+            - task_key: silver_transformation
+          notebook_task:
+            notebook_path: ../src/notebooks/03_gold_marts.py
+            source: WORKSPACE
+
+        - task_key: governance_controls
+          depends_on:
+            - task_key: gold_marts
+          notebook_task:
+            notebook_path: ../src/notebooks/04_governance_controls.py
+            source: WORKSPACE
+
+        - task_key: quality_gate
+          depends_on:
+            - task_key: governance_controls
+          notebook_task:
+            notebook_path: ../src/notebooks/05_quality_gate.py
+            source: WORKSPACE

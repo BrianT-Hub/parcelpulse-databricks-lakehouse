@@ -1,0 +1,22 @@
+# Sensitive or large local data
+92134be8-2fa1-49b6-869c-9d9c25d490f1/
+notebook/
+lookup_source/
+outputs/
+docs/
+tools/
+.secrets/
+.env
+.env.*
+.databrickscfg
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# Databricks local state
+.databricks/
