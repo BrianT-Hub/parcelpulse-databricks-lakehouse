@@ -109,3 +109,7 @@ The public demonstration dataset is fully synthetic and contains no employer rec
 ## Migration rationale
 
 The original workflow contained valuable business rules but depended on hard-coded workstation paths, pandas memory, row-wise functions, mutable CSV output, and implicit null behavior. The lakehouse implementation preserves the useful domain logic while adding scalable Spark transformations, Delta transactions, observability, lineage, quality enforcement, and repeatable deployment. The detailed source assessment is intentionally retained only in the local project.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
