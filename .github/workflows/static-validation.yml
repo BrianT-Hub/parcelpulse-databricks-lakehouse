@@ -1,0 +1,76 @@
+name: Static Validation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: static-validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+jobs:
+  validate:
+    name: Static validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Compile Databricks notebooks
+        run: python -m compileall -q src/notebooks
+
+      - name: Verify required project files
+        shell: bash
+        run: |
+          test -f README.md
+          test -f LICENSE
+          test -f databricks.yml
+          test -f resources/parcelpulse_job.yml
+          test -f src/notebooks/01_bronze_ingestion.py
+          test -f src/notebooks/02_silver_transformation.py
+          test -f src/notebooks/03_gold_marts.py
+          test -f src/notebooks/04_governance_controls.py
+          test -f src/notebooks/05_quality_gate.py
+
+      - name: Enforce public repository boundary
+        shell: bash
+        run: |
+
+          forbidden_pattern='^(docs|tools|lookup_source|output|outputs|tmp|notebook|\.secrets|\.databricks)(/|$)'
+          forbidden_files="$(git ls-files | grep -E "$forbidden_pattern" || true)"
+
+          if [ -n "$forbidden_files" ]; then
+            echo "::error::Local-only files must not be tracked"
+            printf '%s\n' "$forbidden_files"
+            exit 1
+          fi
+
+      - name: Reject oversized tracked files
+        shell: bash
+        run: |
+          limit=5242880
+          failed=0
+
+          while IFS= read -r file; do
+            size="$(stat -c %s "$file")"
+            if [ "$size" -gt "$limit" ]; then
+              echo "::error file=$file::Tracked file exceeds 5 MiB ($size bytes)"
+              failed=1
+            fi
+          done < <(git ls-files)
+
+          exit "$failed"
