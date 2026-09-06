@@ -3,6 +3,8 @@
 notebook/
 lookup_source/
 outputs/
+output/
+tmp/
 docs/
 tools/
 .secrets/
