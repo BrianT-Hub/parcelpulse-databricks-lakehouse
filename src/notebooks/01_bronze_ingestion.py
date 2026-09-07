@@ -44,7 +44,7 @@ bronze_stream = (
     .option("encoding", "UTF-8")
     .option("cloudFiles.schemaLocation", schema_path)
     .option("cloudFiles.schemaEvolutionMode", "addNewColumns")
-    .option("rescueDataColumn", "_rescued_data")
+    .option("rescuedDataColumn", "_rescued_data")
     .load(source_path)
     .select(
         "*",
