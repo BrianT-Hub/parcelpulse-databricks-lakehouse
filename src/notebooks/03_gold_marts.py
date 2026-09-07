@@ -430,7 +430,7 @@ summary_validation = spark.sql(
     SELECT
         COUNT(*) AS month_count,
         SUM(PACKAGE_QTY) AS total_packages, 
-        SUM(PACKAGE_QTY) - 187504 AS package_variance,
+        SUM(PACKAGE_QTY) - (SELECT SUM(PACKAGE_QTY) FROM {fact_table}) AS package_variance,
         MIN(ON_TIME_PCT) AS minimum_on_time_pct,
         MAX(ON_TIME_PCT) AS maximum_on_time_pct,
         MIN(SLA_MEASUREMENT_COVERAGE_PCT) AS minimum_measurement_coverage_pct,
