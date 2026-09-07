@@ -52,6 +52,38 @@ Lakeflow Jobs DAG -- quality gate -- DAB dev/test/prod targets
 
 The dev dataset has a landing amplification of `1.808x`, intentionally created by overlapping source windows. This makes the deduplication and idempotency behavior observable rather than theoretical.
 
+## Project evidence
+
+All screenshots below use fully synthetic data and anonymized carrier and service identifiers.
+
+### Executive dashboard
+
+The published AI/BI dashboard summarizes parcel volume, on-time performance, SLA measurement coverage, and transportation spend.
+
+![ParcelPulse executive dashboard](assets/screenshots/dashboard-executive-overview.png)
+
+### Performance analysis
+
+Carrier performance, service-level SLA attainment, and cost-versus-service trade-offs are presented using reusable Gold-layer metrics.
+
+![ParcelPulse performance analysis](assets/screenshots/dashboard-performance-analysis.png)
+
+The carrier-detail view supports month, carrier, and service-level filtering for operational investigation.
+
+![ParcelPulse carrier detail](assets/screenshots/dashboard-carrier-detail.png)
+
+### Lakeflow Jobs orchestration
+
+The five-stage Serverless workflow enforces ordered execution from incremental Bronze ingestion through the final quality gate.
+
+![ParcelPulse Lakeflow Jobs DAG](assets/screenshots/lakeflow-job-dag.png)
+
+### Unity Catalog lineage
+
+Unity Catalog captures the end-to-end dependency graph across reference data, Silver transformations, the parcel fact table, Gold marts, and dashboard consumption.
+
+![ParcelPulse Unity Catalog lineage](assets/screenshots/unity-catalog-lineage.png)
+
 ## Pipeline DAG
 
 ```text
